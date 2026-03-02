@@ -1,6 +1,7 @@
 import { useState, Fragment } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { ABRIGO_TYPES } from '../../data/abrigoTypes';
+import { IoMdHome } from "react-icons/io";
 import styles from './AbrigoTypeSelector.module.css';
 
 // Dynamically import all images from the assets folder
@@ -39,7 +40,7 @@ export const AbrigoTypeSelector = ({ selectedValue, onChange }: AbrigoTypeSelect
                         <span className={styles.triggerName}>{selectedAbrigo.name}</span>
                     </>
                 ) : (
-                    <span className={styles.placeholder}>Selecione...</span>
+                    <span className={styles.placeholder}><IoMdHome /> Selecione o tipo </span>
                 )}
             </div>
 

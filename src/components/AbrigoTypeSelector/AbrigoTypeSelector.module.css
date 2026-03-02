@@ -48,6 +48,7 @@
 .trigger {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 100%;
     padding: 0.8rem 1.2rem;
     border: 0.1rem solid #ccc;
