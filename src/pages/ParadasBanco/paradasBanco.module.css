@@ -112,10 +112,22 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--white);
     padding: 2rem;
     border-radius: 1rem;
     z-index: 1000;
+}
+
+.loadingIcon {
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+    transition: all 5s ease;
+
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .iconSuccess {
@@ -164,3 +176,4 @@
         z-index: 9999;
     }
 }
+

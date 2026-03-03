@@ -9,7 +9,7 @@ import iconMarker from 'leaflet/dist/images/marker-icon.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { FaBus, FaBusAlt } from "react-icons/fa";
-import { IoMapSharp, IoArrowBack } from 'react-icons/io5';
+import { IoMapSharp, IoArrowBack, IoReload } from 'react-icons/io5';
 import { MdSatellite } from 'react-icons/md';
 import { formatDateForInput } from '../../utils/formatters';
 import { useParadasBanco } from '../../hooks/useParadasBanco';
@@ -107,7 +107,11 @@ export const ParadasBancoPage = () => {
                 </div>
             </div>
 
-            {loading && <div className={styles.loading}>Carregando...</div>}
+            {loading && 
+                <div className={styles.loading}>
+                    <IoReload size={40} className={styles.loadingIcon} />
+                </div>
+            }
 
             <div className={styles.mapWrapper}>
                 <MapContainer

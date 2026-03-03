@@ -5,8 +5,11 @@ import { FaCloudDownloadAlt } from 'react-icons/fa';
 import { BiSolidTrashAlt } from 'react-icons/bi';
 import { BsPencilFill } from 'react-icons/bs';
 import { useRegistros } from '../../hooks/useRegistros';
+import { IoReload } from 'react-icons/io5';
+import { usePonto } from '../../context/PontoContext';
 
 export const RegistrosPage = () => {
+    const { syncMessage } = usePonto();
     const {
         pontos,
         syncing,
@@ -22,9 +25,12 @@ export const RegistrosPage = () => {
 
     return (
         <Main className={styles.container}>
-            {message && (
-                <div className={styles.toast}>
-                    {message}
+            {(message || syncMessage) && (
+                <div
+                    className={styles.toast}
+                    style={{ backgroundColor: message ? 'var(--error-color)' : 'var(--success-color)' }}
+                >
+                    {message || syncMessage}
                 </div>
             )}
 
@@ -51,13 +57,15 @@ export const RegistrosPage = () => {
                 </div>
             )}
 
+
             {syncing && (
                 <div className={styles.syncOverlay}>
                     <div className={styles.syncBox}>
-                        <p>Enviando paradas...</p>
+                        <IoReload size={40} className={styles.loadingIcon} />
+                        <h2>Enviando paradas...</h2>
                     </div>
                 </div>
-            )}
+            )};
 
             {pontos.length === 0 ? (
                 <div className={styles.emptyState}>

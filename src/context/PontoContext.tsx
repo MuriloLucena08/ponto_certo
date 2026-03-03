@@ -12,12 +12,14 @@ interface PontoContextType {
     removePonto: (id: number) => Promise<void>;
     syncPontos: () => Promise<void>;
     pendingCount: number;
+    syncMessage: string | null;
 }
 
 const PontoContext = createContext<PontoContextType | undefined>(undefined);
 
 export const PontoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [loading, setLoading] = useState(false);
+    const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
     // Dexie live query
     const pontos = useLiveQuery(() => db.pontos.toArray(), []) || [];
@@ -54,15 +56,18 @@ export const PontoProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const syncPontos = async () => {
         setLoading(true);
+        setSyncMessage(null);
         const pending = await db.pontos.where('syncStatus').equals('pending').toArray();
         const failed = await db.pontos.where('syncStatus').equals('failed').toArray();
         const toSync = [...pending, ...failed];
+        let successCount = 0;
 
         for (const p of toSync) {
             try {
                 const result = await PointsService.createPoint(p);
                 if (result) {
                     await db.pontos.delete(p.id!);
+                    successCount++;
                 } else {
                     await db.pontos.update(p.id!, { syncStatus: 'failed' });
                 }
@@ -71,6 +76,10 @@ export const PontoProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             }
         }
         setLoading(false);
+        if (successCount > 0) {
+            setSyncMessage(`${successCount} registro(s) enviado(s) com sucesso!`);
+            setTimeout(() => setSyncMessage(null), 3000);
+        }
     };
 
     // Optional: Auto-sync when coming online
@@ -81,7 +90,7 @@ export const PontoProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, []);
 
     return (
-        <PontoContext.Provider value={{ pontos, addPonto, updatePonto, removePonto, syncPontos, loading, pendingCount }}>
+        <PontoContext.Provider value={{ pontos, addPonto, updatePonto, removePonto, syncPontos, loading, pendingCount, syncMessage }}>
             {children}
         </PontoContext.Provider>
     );

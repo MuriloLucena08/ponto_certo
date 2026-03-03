@@ -11,11 +11,23 @@ export const useRegistros = () => {
     const navigate = useNavigate();
 
     const handleSync = async () => {
-        if (pendingCount === 0) return;
-        setSyncing(true);
-        await syncPontos();
-        setSyncing(false);
-    };
+         if (pendingCount === 0) return;
+
+         setSyncing(true);
+        const startTime = Date.now();
+
+         await syncPontos();
+
+        const elapsedTime = Date.now() - startTime;
+        const minDisplayTime = 2000; // 2 seconds
+
+        if (elapsedTime < minDisplayTime) {
+            const remainingTime = minDisplayTime - elapsedTime;
+            setTimeout(() => setSyncing(false), remainingTime);
+        } else {
+            setSyncing(false);
+        }
+     };
 
     const handleEdit = (ponto: any) => {
         navigate(`/formulario?edit=${ponto.id}&lat=${ponto.latitude}&lng=${ponto.longitude}`);
@@ -31,7 +43,7 @@ export const useRegistros = () => {
             if (typeof removePonto === 'function') {
                 await removePonto(deleteId);
                 setMessage('Parada removida');
-                setTimeout(() => setMessage(null), 3000);
+                setTimeout(() => setMessage(null), 5000);
             }
             setShowModal(false);
             setDeleteId(null);

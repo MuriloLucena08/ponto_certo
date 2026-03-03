@@ -8,7 +8,7 @@ export default defineConfig({
   preview: {
     proxy: {
       '/api-semob': {
-        target: 'http://dados.semob.df.gov.br',
+        target: 'http://dadoshlog.semob.gdfnet.df:8080/pcp',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api-semob/, '')
@@ -80,8 +80,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      'api-semob': {
-        target: 'http://dados.semob.df.gov.br',
+      '/api-semob': {
+        target: 'http://dadoshlog.semob.gdfnet.df:8080/pcp',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api-semob/, '')
