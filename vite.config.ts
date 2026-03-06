@@ -8,7 +8,7 @@ export default defineConfig({
   preview: {
     proxy: {
       '/api-semob': {
-        target: 'https://2d3b-131-72-222-138.ngrok-free.app',
+        target: 'https://2d3b-131-72-222-138.ngrok-free.app/',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api-semob/, '')
@@ -81,8 +81,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api-semob': {
-        target: 'https://2d3b-131-72-222-138.ngrok-free.app',
-        
+        target: 'https://2d3b-131-72-222-138.ngrok-free.app/',
+
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api-semob/, '')
