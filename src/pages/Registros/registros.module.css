@@ -215,3 +215,15 @@
     cursor: pointer;
     font-weight: 500;
 }
+
+.containerCheckbox {
+    display: 'flex'; 
+    align-Items: 'center';
+    margin-right: 1rem;
+}
+
+.checkbox {
+    width: '2rem';
+    height: '2rem';
+    cursor: 'pointer';
+}

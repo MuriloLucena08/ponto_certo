@@ -5,58 +5,76 @@ import { IPonto } from '../types/Ponto';
 import { PointsService } from '../services/points';
 
 export const useRegistros = () => {
-    const { pontos, pendingCount, removePonto, updatePonto, setSyncMessage } = usePonto() as any;
+    const { pontos: allPontos, removePonto, updatePonto, setSyncMessage } = usePonto() as any;
     const [syncing, setSyncing] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [deleteId, setDeleteId] = useState<any>(null);
     const [message, setMessage] = useState<string | null>(null);
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const navigate = useNavigate();
 
-    const handleSync = async () => {
-        const pontosParaSincronizar: IPonto[] = pontos.filter((p: IPonto) => p.syncStatus === 'pending');
+    // Filtra apenas os cards que devem aparecer (pending e failed)
+    const pontos = allPontos.filter((p: IPonto) => p.syncStatus === 'pending' || p.syncStatus === 'failed');
+    const pendingCount = pontos.length;
 
-        if (pontosParaSincronizar.length === 0) {
-            setSyncMessage('Nenhuma parada pendente para sincronizar.');
-            setTimeout(() => setSyncMessage(null), 3000);
+    const toggleSelection = (id: number) => {
+        setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+    };
+
+    const handleSync = async () => {
+        if (selectedIds.length === 0) {
+            setMessage('Por favor, selecione ao menos uma parada para sincronizar.');
+            setTimeout(() => setMessage(null), 3000);
             return;
         }
 
+        // Filtra para enviar apenas os itens selecionados
+        const itemsToSync = pontos.filter((p: IPonto) => selectedIds.includes(p.id!));
+ 
         setSyncing(true);
         let sucesso = 0;
         let falha = 0;
 
-        for (const [index, ponto] of pontosParaSincronizar.entries()) {
+        for (const [index, ponto] of itemsToSync.entries()) {
             try {
                 const enviado = await PointsService.createPoint(ponto);
                 if (enviado) {
-                    await updatePonto({ ...ponto, syncStatus: 'synced' });
+                    await removePonto(ponto.id);
                     sucesso++;
+                    // Remove da seleção se estiver selecionado
+                    if (selectedIds.includes(ponto.id!)) {
+                        setSelectedIds(prev => prev.filter(id => id !== ponto.id));
+                    }
                 } else {
                     throw new Error('A API não retornou sucesso (status != 201)');
                 }
             } catch (error) {
                 console.error(`Falha ao sincronizar a parada ${ponto.id}:`, error);
+                await updatePonto({ ...ponto, syncStatus: 'failed' });
                 falha++;
             }
 
             // Adiciona uma pausa de 3 segundos entre cada envio, exceto para o último
-            if (index < pontosParaSincronizar.length - 1) {
+            if (index < itemsToSync.length - 1) {
                 await new Promise(resolve => setTimeout(resolve, 3000));
             }
         }
 
         setSyncing(false);
 
-        let finalMessage = '';
-        if (falha === 0) {
-            finalMessage = 'Todas as paradas foram sincronizadas com sucesso!';
-        } else if (sucesso === 0) {
-            finalMessage = 'Falha ao sincronizar todas as paradas.';
-        } else {
-            finalMessage = `${sucesso} parada(s) sincronizada(s). ${falha} falharam.`;
-        }
-        setSyncMessage(finalMessage);
-        setTimeout(() => setSyncMessage(null), 5000);
+        // Mensagem aparece após 3 segundos do término do processo
+        setTimeout(() => {
+            if (sucesso === 1) {
+                setSyncMessage(`${sucesso} registro enviado com sucesso!`);
+                setTimeout(() => setSyncMessage(null), 3000);
+            } else if (sucesso > 1) {
+                setSyncMessage(`${sucesso} registros enviados com sucesso!`);
+                setTimeout(() => setSyncMessage(null), 3000);
+            } else if (falha > 0) {
+                setMessage('Falha ao sincronizar todas as paradas selecionadas.');
+                setTimeout(() => setMessage(null), 3000);
+            }
+        }, 3000);
      };
 
     const handleEdit = (ponto: any) => {
@@ -73,7 +91,7 @@ export const useRegistros = () => {
             if (typeof removePonto === 'function') {
                 await removePonto(deleteId);
                 setMessage('Parada removida');
-                setTimeout(() => setMessage(null), 5000);
+                setTimeout(() => setMessage(null), 3000);
             }
             setShowModal(false);
             setDeleteId(null);
@@ -91,6 +109,8 @@ export const useRegistros = () => {
         showModal,
         message,
         pendingCount,
+        selectedIds,
+        toggleSelection,
         handleSync,
         handleEdit,
         handleDelete,

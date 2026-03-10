@@ -75,7 +75,7 @@ export const FormularioPage = () => {
 
                 <Section icon={<FaBus size={20} />} title="Características" className={styles.section}>
                     <div className={styles.switches}>
-                        <Switch label="Linhas Escolares" value={linhaEscolares} onChange={setLinhaEscolares} />
+                        <Switch label="Linhas Escolares" value={linhaEscolares} onChange={setLinhaEscolares} disabled />
                         <Switch label="Linhas STPC" value={linhaStpc} onChange={setLinhaStpc} />
                         <Switch label="Baia" value={baia} onChange={setBaia} />
                     </div>

@@ -13,6 +13,7 @@ interface PontoContextType {
     syncPontos: () => Promise<void>;
     pendingCount: number;
     syncMessage: string | null;
+    setSyncMessage: (message: string | null) => void;
 }
 
 const PontoContext = createContext<PontoContextType | undefined>(undefined);
@@ -90,7 +91,7 @@ export const PontoProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, []);
 
     return (
-        <PontoContext.Provider value={{ pontos, addPonto, updatePonto, removePonto, syncPontos, loading, pendingCount, syncMessage }}>
+        <PontoContext.Provider value={{ pontos, addPonto, updatePonto, removePonto, syncPontos, loading, pendingCount, syncMessage, setSyncMessage }}>
             {children}
         </PontoContext.Provider>
     );

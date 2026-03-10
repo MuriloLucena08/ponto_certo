@@ -80,7 +80,7 @@ export const useFormulario = () => {
             endereco,
             latitude: lat,
             longitude: lng,
-            linhaEscolares: false,
+            linhaEscolares,
             linhaStpc,
             baia,
             rampa,

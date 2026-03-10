@@ -16,6 +16,8 @@ export const RegistrosPage = () => {
         showModal,
         message,
         pendingCount,
+        selectedIds,
+        toggleSelection,
         handleSync,
         handleEdit,
         handleDelete,
@@ -76,6 +78,14 @@ export const RegistrosPage = () => {
                     {pontos.map((ponto: any, index: any) => (
                         <div key={ponto.id || index} className={styles.card}>
                             <div className={styles.cardContent}>
+                                <div className={styles.checkboxContainer}>
+                                    <input
+                                        className={styles.checkbox}
+                                        type="checkbox"
+                                        checked={selectedIds.includes(ponto.id)}
+                                        onChange={() => toggleSelection(ponto.id)}
+                                    />
+                                </div>
                                 <div className={styles.imageContainer}>
                                     <span className={styles.locationIcon}><MdLocationPin /></span>
                                 </div>

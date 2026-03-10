@@ -35,3 +35,7 @@
 .toggle.active .knob {
     left: 22px;
 }
+
+.disabled {
+    cursor: not-allowed;
+}
