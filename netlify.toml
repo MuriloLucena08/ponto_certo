@@ -1,5 +1,5 @@
 [[redirects]]
   from = "/api-semob/*"
-  to = "https://ponto-certo-melhorias.netlify.app:splat"
+  to = "https://ponto-certo-melhorias.netlify.app/:splat"
   status = 200
   force = true
