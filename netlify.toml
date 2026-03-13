@@ -1,5 +1,5 @@
 [[redirects]]
   from = "/api-semob/*"
-  to = "https://2d3b-131-72-222-138.ngrok-free.app/:splat:splat"
+  to = "https://dadoshlog.semob.gdfnet.df:8080/pcp/:splat"
   status = 200
   force = true
